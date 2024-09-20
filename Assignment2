@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+#define MAX_FEATURES 100
+
+// Function to create the initial river state
+void create_river(char river_features[][10], int *count) {
+    const char *features[] = {"rock", "fish", "bear"};
+    *count = 0;
+
+    for (int i = 0; i < 5; i++) {  // Add 5 initial features
+        strcpy(river_features[*count], features[rand() % 3]);
+        (*count)++;
+    }
+}
+
+// Function to simulate the flow of the river
+void flow_river(char river_features[][10], int count) {
+    printf("The river flows...\n");
+    for (int i = 0; i < count; i++) {
+        if (strcmp(river_features[i], "rock") == 0) {
+            printf("A rock is blocking the flow.\n");
+        } else if (strcmp(river_features[i], "fish") == 0) {
+            printf("Fish are swimming happily.\n");
+        } else if (strcmp(river_features[i], "bear") == 0) {
+            printf("A bear is fishing by the riverbank.\n");
+        }
+    }
+    sleep(1);  // Simulate time passing
+}
+
+// Function to add a feature to the river
+void add_feature(char river_features[][10], int *count, const char *feature) {
+    if (*count < MAX_FEATURES) {
+        strcpy(river_features[*count], feature);
+        (*count)++;
+        printf("A %s has been added to the river.\n", feature);
+    } else {
+        printf("Cannot add more features; river is full.\n");
+    }
+}
+
+// Function to display the current state of the river
+void display_river(char river_features[][10], int count) {
+    printf("Current river features:\n");
+    for (int i = 0; i < count; i++) {
+        printf("- %s\n", river_features[i]);
+    }
+}
+
+// Main function to run the river simulation
+int main() {
+    srand(time(NULL));  // Seed random number generator
+
+    char river_features[MAX_FEATURES][10];
+    int feature_count = 0;
+
+    create_river(river_features, &feature_count);
+
+    while (1) {
+        display_river(river_features, feature_count);
+        flow_river(river_features, feature_count);
+        
+        char user_input[10];
+        printf("Do you want to add a feature (rock, fish, bear)? Type 'exit' to stop: ");
+        scanf("%s", user_input);
+
+        if (strcmp(user_input, "exit") == 0) {
+            printf("Ending the river simulation.\n");
+            break;
+        } else if (strcmp(user_input, "rock") == 0 || 
+                   strcmp(user_input, "fish") == 0 || 
+                   strcmp(user_input, "bear") == 0) {
+            add_feature(river_features, &feature_count, user_input);
+        } else {
+            printf("Invalid input. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
